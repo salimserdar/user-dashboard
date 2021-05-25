@@ -16,7 +16,6 @@ const UserDetail = () : JSX.Element => {
             const userPosts = await instance.get(`/posts?userId=${userId}`);
             setCurrentUser({...res.data});
             setCurrentUserPosts([...userPosts.data])
-            console.log(res.data);
         }
         fetchUser();
     }, [])
@@ -70,7 +69,7 @@ const UserDetail = () : JSX.Element => {
                 {curentUserPosts.map((post : any, index: any) => {
                     return (
                         index < 3 ?
-                        <UserSection>
+                        <UserSection key={index}>
                             <h3>{post.title}</h3>
                             <p>{post.body}</p>
                         </UserSection>

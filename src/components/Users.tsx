@@ -10,6 +10,7 @@ import { UserContext } from '../contexts/UserContext';
 const Users = () : JSX.Element => {
     const [search, setSearch] = useState<any>('');
     const [sort, setSort] = useState<any>('name');
+    const [noUser, setNoUser] = useState<boolean>(false);
     const [currentUsers, setCurrentUsers] = useState<any[]>([]);
     const { users } = useContext(UserContext);
 
@@ -22,13 +23,14 @@ const Users = () : JSX.Element => {
         if(e.key === 'Enter') {
             if(search !== '') {
                 const searchUsers = _.find(currentUsers, (o) => o.name === search || o.username === search || o.email === search);
-                if(typeof searchUsers !== undefined) {
+                if(typeof searchUsers !== 'undefined') {
+                    setNoUser(false);
                     setCurrentUsers([]);
                     setCurrentUsers([searchUsers]);
+                } else {
+                    setNoUser(true);
                 }
-            } else {
-                setCurrentUsers([...users]);
-            }
+            } 
         }
     }
 
@@ -67,8 +69,9 @@ const Users = () : JSX.Element => {
                     </UserInputsCol>
                 </UserInputs>
             </UserHeader>
+            {noUser ? <UserNotFound>User not found!</UserNotFound> : null}
             <UserList>
-                {currentUsers.map((user : any, index : number) => {
+                {currentUsers.length > 0 ? currentUsers.map((user : any, index : number) => {
                     return (
                         user.name ? 
                             <Link to={`/user/${user.id}`} key={index}>
@@ -92,7 +95,7 @@ const Users = () : JSX.Element => {
                             </Link>
                         : null
                     )
-                })}
+                }) : null}
             </UserList>
         </UserDashboard>
     );
@@ -237,6 +240,13 @@ const UserHeader = styled.div`
     @media only screen and (min-width: 768px) {
        flex-direction: row;
     }
+`
+
+const UserNotFound = styled.div`
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    color: rgb(174, 46, 46);
 `
 
 
